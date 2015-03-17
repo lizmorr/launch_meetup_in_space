@@ -53,3 +53,21 @@ end
 get '/example_protected_page' do
   authenticate!
 end
+
+get '/meetups' do
+  erb :index
+end
+
+get '/meetups/:id' do
+  #will bring in details from querying the DBs
+  erb :meetup_details, locals: {params: params}
+end
+
+get '/meetups/create' do
+  erb :create_meetup
+end
+
+post '/meetups/create' do
+  #add information to DB
+  erb '/meetups/:id' #where id is the id of the meetup that was just created
+end
