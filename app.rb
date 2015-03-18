@@ -30,7 +30,7 @@ def authenticate!
 end
 
 get '/' do
-  erb :index
+  redirect '/meetups/'
 end
 
 get '/auth/github/callback' do
@@ -55,12 +55,11 @@ get '/example_protected_page' do
 end
 
 get '/meetups' do
-  erb :index
+  erb :index, locals: {active_meetups: Meetup.order(:name)}
 end
 
 get '/meetups/:id' do
-  #will bring in details from querying the DBs
-  erb :meetup_details, locals: {params: params}
+  erb :meetup_details, locals: {meetup: Meetup.find(params[:id])}
 end
 
 get '/meetups/create' do
