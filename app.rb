@@ -84,3 +84,18 @@ end
 get '/meetups/:id' do
   erb :meetup_details, locals: {meetup: Meetup.find(params[:id])}
 end
+
+post '/meetups/join/:id' do
+  if session[:user_id]
+    membership = Membership.new(user_id: session[:user_id],
+      meetup_id: params[:id])
+    if membership.save
+      flash[:notice] = "You have successfully joined #{membership.meetup}"
+      redirect "meetups/#{params[:id]}"
+    else
+      flash[:notice] = membership.errors.full_messages
+    end
+  else
+    flash[:notice] = "Must be signed in to do this!"
+  end
+end
