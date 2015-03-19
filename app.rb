@@ -73,6 +73,7 @@ post '/meetups/create' do
     creator_id: session[:user_id])
   if meetup.save
     id = meetup.id
+    flash[:notice] = "#{meetup.name} was successfully created!"
     redirect "/meetups/#{id}"
   else
     flash[:notice] = meetup.errors.full_messages
