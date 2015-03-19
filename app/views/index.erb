@@ -3,7 +3,10 @@
   <% active_meetups.each do |meetup| %>
     <li>
       <a href="/meetups/<%= meetup.id %>">
-        <%= meetup.namez %>
+        <%= meetup.name %>
       </a>
     </li>
   <% end %>
+<ul>
+
+<a href="/meetups/create">Create a new meetup!</a>

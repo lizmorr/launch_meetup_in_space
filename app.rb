@@ -7,6 +7,8 @@ require_relative 'config/application'
 
 Dir['app/**/*.rb'].each { |file| require_relative file }
 
+enable :sessions
+
 helpers do
   def current_user
     user_id = session[:user_id]
@@ -30,7 +32,7 @@ def authenticate!
 end
 
 get '/' do
-  redirect '/meetups/'
+  redirect '/meetups'
 end
 
 get '/auth/github/callback' do
@@ -58,15 +60,26 @@ get '/meetups' do
   erb :index, locals: {active_meetups: Meetup.order(:name)}
 end
 
-get '/meetups/:id' do
-  erb :meetup_details, locals: {meetup: Meetup.find(params[:id])}
-end
-
 get '/meetups/create' do
+  authenticate!
   erb :create_meetup
 end
 
 post '/meetups/create' do
-  #add information to DB
-  erb '/meetups/:id' #where id is the id of the meetup that was just created
+
+  meetup = Meetup.new(name: params[:meetup_name],
+    location: params[:meetup_location],
+    description: params[:meetup_description],
+    creator_id: session[:user_id])
+  if meetup.save
+    id = meetup.id
+    redirect "/meetups/#{id}"
+  else
+    flash[:notice] = meetup.errors.full_messages
+    redirect '/meetups/create'
+  end
+end
+
+get '/meetups/:id' do
+  erb :meetup_details, locals: {meetup: Meetup.find(params[:id])}
 end
