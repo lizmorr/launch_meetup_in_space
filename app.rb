@@ -73,6 +73,7 @@ post '/meetups/create' do
     creator_id: session[:user_id])
   if meetup.save
     id = meetup.id
+    Membership.create(user_id: session[:user_id], meetup_id: id)
     flash[:notice] = "#{meetup.name} was successfully created!"
     redirect "/meetups/#{id}"
   else
@@ -90,12 +91,14 @@ post '/meetups/join/:id' do
     membership = Membership.new(user_id: session[:user_id],
       meetup_id: params[:id])
     if membership.save
-      flash[:notice] = "You have successfully joined #{membership.meetup}"
+      flash[:notice] = "You have successfully joined #{membership.meetup.name}"
       redirect "meetups/#{params[:id]}"
     else
       flash[:notice] = membership.errors.full_messages
+      redirect "meetups/#{params[:id]}"
     end
   else
     flash[:notice] = "Must be signed in to do this!"
+    redirect "meetups/#{params[:id]}"
   end
 end

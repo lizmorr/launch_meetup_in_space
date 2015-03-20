@@ -27,7 +27,13 @@
 <% if flash.any? %>
   <div class="flash">
     <div class="container">
-      <%= flash[:notice] %>
+      <% if flash[:notice].is_a?(Array) %>
+        <% flash[:notice].each do |error| %>
+          <li><%= error %></li>
+        <% end %>
+      <% else %>
+        <%= flash[:notice] %>
+      <% end %>
     </div>
   </div>
 <% end %>
